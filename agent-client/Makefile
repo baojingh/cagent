@@ -1,17 +1,22 @@
-VERSION = 1.0.10
+VERSION = 0.0.1
 CURRENT_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
 
-build-all: build build-linux64 build-linux32
-build: pre
-	go build -ldflags="-s -w -X 'main.buildVersion=v$(VERSION)' -X 'main.buildTime=$(CURRENT_TIME)'" -x -v -o build/ssmctl-grpc-client
+all: clean build-linux64 run
+
 build-linux64: pre
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X 'main.buildVersion=v$(VERSION)' -X 'main.buildTime=$(CURRENT_TIME)'" -x -v -o build/ssmctl-grpc-client-linux64
-build-linux32: pre
-	GOOS=linux GOARCH=386 go build -ldflags="-s -w -X 'main.buildVersion=v$(VERSION)' -X 'main.buildTime=$(CURRENT_TIME)'" -x -v -o build/ssmctl-grpc-client-linux32
+	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X 'main.buildVersion=v$(VERSION)' -X 'main.buildTime=$(CURRENT_TIME)'" -x -v -o build/agent-client-linux64
+
+run:build-linux64
+	build/agent-client-linux64
+
+push:
+	git add .
+	git commit -m "update"
+	git push origin main
 
 clean:
 	rm -rf build
+	rm -rf var/log/agent-client/
+
 pre:
-	mkdir -p build
-	mkdir -p build/logs
-	cp -r ./cer build/
+	mkdir -p /var/log/agent-client/ build
