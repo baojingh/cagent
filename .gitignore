@@ -19,3 +19,6 @@
 
 # Go workspace file
 go.work
+agent-client/build/
+agent-server/build/
+agentctl/build/
