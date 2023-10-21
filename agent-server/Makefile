@@ -9,11 +9,6 @@ build-linux64: pre
 run:build-linux64
 	build/agent-server-linux64
 
-push:
-	git add .
-	git commit -m "update"
-	git push origin main
-
 clean:
 	rm -rf build
 	rm -rf var/log/agent-server/
