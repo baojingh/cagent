@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// The line must exist
+// protoc-gen-go: unable to determine Go import path for "helloworld.proto"
+option go_package = "agent-client/helloworld";
+
+package helloworld;
+
+service Greeter {
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloReply {
+    string message = 1;
+}
