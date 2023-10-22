@@ -29,4 +29,18 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 protoc --go_out=. --go_opt=paths=source_relative     --go-grpc_out=. --go-grpc_opt=paths=source_relative     helloworld/helloworld.proto
 ```
 
+# Roadmap
+### agentctl
+It is a linux tool for the client host to use.
+It is not a daemon process.
+ctl has a dedicated feature to do the biz.
+
+### Features
+1. Update conf files
+2. Restart process when conf files updated success
+3. Upload files with big size, for example 50MB
+
+
+
+
 

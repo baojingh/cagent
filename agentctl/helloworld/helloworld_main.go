@@ -4,10 +4,11 @@ import (
 	"agent-client/helloworld"
 	"context"
 	"flag"
-	"fmt"
-	"net"
+	"log"
+	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 /**
@@ -16,25 +17,31 @@ import (
   Description:
 */
 
-var (
-	port = flag.Int("port", 50051, "Server Port")
+const (
+	defaultName = "bob"
 )
 
-type server struct {
-	helloworld.UnimplementedGreeterServer
-}
-
-func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
-	fmt.Printf("Receive: %v", in.GetName())
-	return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
-}
+var (
+	addr = flag.String("addr", "localhost:50051", "the address to connect to")
+	name = flag.String("name", defaultName, "Name to greet")
+)
 
 func main() {
 	flag.Parse()
-	lis, _ := net.Listen("tcp", fmt.Sprintf(":%d", *port))
-	s := grpc.NewServer()
-	helloworld.RegisterGreeterServer(s, &server{})
-	fmt.Printf("Server listening at %v", lis.Addr())
-	s.Serve(lis)
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := helloworld.NewGreeterClient(conn)
 
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: *name})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", r.GetMessage())
 }
