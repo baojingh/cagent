@@ -20,6 +20,6 @@ message FileRequest {
 
 message FileResponse {
     string status = 1;
-    string errpr = 2;
+    string error = 2;
 }
 
