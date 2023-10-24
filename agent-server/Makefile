@@ -21,7 +21,6 @@ clean:
 	rm -rf build/
 	rm -rf opt/agent-server/*
 	rm -rf /var/log/agent-server/*
-	rm -rf pb/*.go
 
 pre:
 	mkdir -p /var/log/agent-server/

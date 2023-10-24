@@ -1,9 +1,6 @@
 package config
 
 import (
-	"agent-server/constant"
-	"agent-server/utils"
-
 	"github.com/spf13/viper"
 )
 
@@ -20,12 +17,7 @@ var (
 )
 
 // Setup values customized by users
-func SetupConfig(cert string, logPath string, tlsEnabled bool,
-	configPath string) {
-
-	if utils.IsEmpty(configPath) {
-		ConfigPath = constant.DEFAULT_CONF_PATH
-	}
+func SetupConfig(configPath string) {
 	v := viper.New()
 	// The config file location cannot be changed.
 	v.SetConfigFile(configPath)
@@ -41,13 +33,4 @@ func SetupConfig(cert string, logPath string, tlsEnabled bool,
 	LogTime = v.GetInt("logrotate.time")
 	CertPath = v.GetString("cert.path")
 	TLSEnabled = v.GetBool("tls.enabled")
-
-	if !utils.IsEmpty(cert) {
-		CertPath = cert
-	}
-	if !utils.IsEmpty(logPath) {
-		LogPath = logPath
-	}
-
-	TLSEnabled = tlsEnabled
 }

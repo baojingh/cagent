@@ -2,6 +2,7 @@ package main
 
 import (
 	"agent-server/config"
+	"agent-server/constant"
 	"agent-server/server"
 	"flag"
 	"os"
@@ -21,10 +22,7 @@ var log = logger.New()
 
 var (
 	// flag.string etc. return a pointer
-	tlsEnabled = flag.Bool("tls", false, "enable TLS")
-	certPath   = flag.String("cert", "", "cert directory")
-	logPath    = flag.String("log", "", "log directory")
-	configPath = flag.String("config", "", "config directory")
+	configPath = flag.String("config", constant.DEFAULT_CONF_PATH, "config directory")
 )
 
 func main() {
@@ -32,7 +30,7 @@ func main() {
 	go PrepareforShutdown()
 	flag.Parse()
 	// Values from config file will be overwrited by the command value
-	config.SetupConfig(*certPath, *logPath, *tlsEnabled, *configPath)
+	config.SetupConfig(*configPath)
 	server.StartGrpcServer()
 }
 
