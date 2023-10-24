@@ -1,6 +1,8 @@
 package config
 
 import (
+	"agent-server/constant"
+
 	"github.com/spf13/viper"
 )
 
@@ -16,11 +18,11 @@ var (
 	TLSEnabled bool
 )
 
-// Setup values customized by users
-func SetupConfig(configPath string) {
+// Init config values and overite values from config file
+func init() {
 	v := viper.New()
 	// The config file location cannot be changed.
-	v.SetConfigFile(configPath)
+	v.SetConfigFile(constant.DEFAULT_CONF_PATH)
 	err := v.ReadInConfig()
 	if err != nil {
 		return

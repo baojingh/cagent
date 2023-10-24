@@ -1,10 +1,7 @@
 package main
 
 import (
-	"agent-server/config"
-	"agent-server/constant"
 	"agent-server/server"
-	"flag"
 	"os"
 	"os/signal"
 	"syscall"
@@ -20,17 +17,8 @@ import (
 
 var log = logger.New()
 
-var (
-	// flag.string etc. return a pointer
-	configPath = flag.String("config", constant.DEFAULT_CONF_PATH, "config directory")
-)
-
 func main() {
-	log.Info("start entry-point for agent-server")
 	go PrepareforShutdown()
-	flag.Parse()
-	// Values from config file will be overwrited by the command value
-	config.SetupConfig(*configPath)
 	server.StartGrpcServer()
 }
 
