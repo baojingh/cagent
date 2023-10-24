@@ -32,7 +32,7 @@ func main() {
 	go PrepareforShutdown()
 	flag.Parse()
 	// Values from config file will be overwrited by the command value
-	config.SetupConfig(*certPath, *logPath, *tlsEnabled)
+	config.SetupConfig(*certPath, *logPath, *tlsEnabled, *configPath)
 	server.StartGrpcServer()
 }
 

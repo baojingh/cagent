@@ -1,7 +1,7 @@
 package config
 
 import (
-	"agent-server/config"
+	"agent-server/constant"
 	"agent-server/utils"
 
 	"github.com/spf13/viper"
@@ -22,8 +22,9 @@ var (
 // Setup values customized by users
 func SetupConfig(cert string, logPath string, tlsEnabled bool,
 	configPath string) {
+
 	if utils.IsEmpty(configPath) {
-		ConfigPath = config.DEFAULT_CONF_PATH
+		ConfigPath = constant.DEFAULT_CONF_PATH
 	}
 	v := viper.New()
 	// The config file location cannot be changed.
