@@ -24,6 +24,7 @@ var (
 	tlsEnabled = flag.Bool("tls", false, "enable TLS")
 	certPath   = flag.String("cert", "", "cert directory")
 	logPath    = flag.String("log", "", "log directory")
+	configPath = flag.String("config", "", "config directory")
 )
 
 func main() {
