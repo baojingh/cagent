@@ -1,15 +1,19 @@
 service:
-  ip: 10.11.2.33
-  port: 3455
+  ip: 0.0.0.0
+  port: 50051
 
+tls:
+  enabled: false
+  
 log:
-  path:
+  path: /opt/logpath
 
 logrotate:
   count: 7
+  # Unit is MB
   fileSize: 1024 * 1024 * 1
   time: 24
 
 cert:
-  path: /opt
+  path: /opt/certpath
 

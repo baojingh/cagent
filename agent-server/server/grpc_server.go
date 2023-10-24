@@ -1,6 +1,7 @@
 package server
 
 import (
+	"agent-server/config"
 	logger "agent-server/log"
 	"fmt"
 	"net"
@@ -9,10 +10,12 @@ import (
 )
 
 var log = logger.New()
+var grpcServer *grpc.Server
 
 // grpc server entry for running
-func StartGrpcServer(ip string, port int, tlsEnabled bool) {
-	log.Info("GRPC Server is starting")
+func StartGrpcServer() {
+	ip := config.Ip
+	port := config.Port
 	ipPort := fmt.Sprintf("%s:%d", ip, port)
 	listener, err := net.Listen("tcp", ipPort)
 	if err != nil {
@@ -20,7 +23,18 @@ func StartGrpcServer(ip string, port int, tlsEnabled bool) {
 		return
 	}
 	var opts []grpc.ServerOption
-	server := grpc.NewServer(opts...)
+	if config.TLSEnabled {
+		log.Info("Setup TLS parameters for GRPC Server.")
+	}
+
+	grpcServer = grpc.NewServer(opts...)
 	log.Infof("GPRC Server starts in port %d", port)
-	server.Serve(listener)
+	grpcServer.Serve(listener)
+}
+
+func StopGRPCServer() {
+	if grpcServer != nil {
+		grpcServer.GracefulStop()
+		log.Info("GRPC Server shutdown gracefully")
+	}
 }

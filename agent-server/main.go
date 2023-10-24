@@ -1,8 +1,12 @@
 package main
 
 import (
+	"agent-server/config"
 	"agent-server/server"
 	"flag"
+	"os"
+	"os/signal"
+	"syscall"
 
 	logger "agent-server/log"
 )
@@ -17,17 +21,27 @@ var log = logger.New()
 
 var (
 	// flag.string etc. return a pointer
-	ip         = flag.String("ip", "0.0.0.0", "ip")
-	port       = flag.Int("port", 50051, "GRPC Server Port")
 	tlsEnabled = flag.Bool("tls", false, "enable TLS")
-	certPath   = flag.String("cert", "cert/", "cert directory")
-	logPath    = flag.String("log", "log/", "log directory")
-	configPath = flag.String("config", "config/", "log directory")
+	certPath   = flag.String("cert", "", "cert directory")
+	logPath    = flag.String("log", "", "log directory")
+	configPath = flag.String("config", "", "log directory")
 )
 
 func main() {
+	log.Info("start entry-point for agent-server")
+	go PrepareforShutdown()
 	flag.Parse()
 	// Values from config file will be overwrited by the command value
+	config.SetupConfig(*certPath, *logPath, *configPath, *tlsEnabled)
+	server.StartGrpcServer()
+}
 
-	server.StartGrpcServer(*ip, *port, *tlsEnabled)
+// shutdown GRPC Server gracefully
+func PrepareforShutdown() {
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM, os.Kill)
+	sig := <-signalChan
+	log.Warnf("Receive signal %s and exit", sig)
+	server.StopGRPCServer()
+	os.Exit(0)
 }
