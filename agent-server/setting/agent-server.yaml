@@ -1,0 +1,15 @@
+service:
+  ip: 10.11.2.33
+  port: 3455
+
+log:
+  path:
+
+logrotate:
+  count: 7
+  fileSize: 1024 * 1024 * 1
+  time: 24
+
+cert:
+  path: /opt
+

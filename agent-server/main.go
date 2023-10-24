@@ -1,13 +1,10 @@
 package main
 
 import (
-	"agentctl/helloworld"
-	"context"
+	"agent-server/server"
 	"flag"
-	"fmt"
-	"net"
 
-	"google.golang.org/grpc"
+	logger "agent-server/log"
 )
 
 /**
@@ -16,25 +13,21 @@ import (
   Description:
 */
 
+var log = logger.New()
+
 var (
-	port = flag.Int("port", 50051, "Server Port")
+	// flag.string etc. return a pointer
+	ip         = flag.String("ip", "0.0.0.0", "ip")
+	port       = flag.Int("port", 50051, "GRPC Server Port")
+	tlsEnabled = flag.Bool("tls", false, "enable TLS")
+	certPath   = flag.String("cert", "cert/", "cert directory")
+	logPath    = flag.String("log", "log/", "log directory")
+	configPath = flag.String("config", "config/", "log directory")
 )
-
-type server struct {
-	helloworld.UnimplementedGreeterServer
-}
-
-func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
-	fmt.Printf("Receive: %v", in.GetName())
-	return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
-}
 
 func main() {
 	flag.Parse()
-	lis, _ := net.Listen("tcp", fmt.Sprintf(":%d", *port))
-	s := grpc.NewServer()
-	helloworld.RegisterGreeterServer(s, &server{})
-	fmt.Printf("Server listening at %v", lis.Addr())
-	s.Serve(lis)
+	// Values from config file will be overwrited by the command value
 
+	server.StartGrpcServer(*ip, *port, *tlsEnabled)
 }
