@@ -3,17 +3,20 @@ service:
   port: 50051
 
 tls:
-  enabled: false
+  enabled: true
   
 log:
-  path: /opt/logpath
+  path: /var/log/agent-server
 
 logrotate:
   count: 7
   # Unit is MB
-  fileSize: 1024 * 1024 * 1
+  fileSize: 50
+  # Unit is hour
   time: 24
 
 cert:
-  path: /opt/certpath
+  path: /opt/agent-server/cert
+
+
 

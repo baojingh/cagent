@@ -41,6 +41,18 @@ ctl has a dedicated feature to do the biz.
 3. Upload files with big size, for example 50MB
 
 
+# Detailed Design
+### Suricata
+1. Upload files with large size
+2. update net in suricata.yaml
+3. Update logrotate
+
+### Fluentbit
+1. Update host and port in fluent-bit.conf
+2. Update logrotate
+
+
+
 
 
 

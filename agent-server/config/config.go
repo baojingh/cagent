@@ -1,13 +1,10 @@
 package config
 
 import (
-	logger "agent-server/log"
 	"agent-server/utils"
 
 	"github.com/spf13/viper"
 )
-
-var log = logger.New()
 
 var (
 	LogCount   int
@@ -24,10 +21,10 @@ var (
 // Init config values and overite values from config file
 func init() {
 	v := viper.New()
-	v.SetConfigFile("agent-server/setting/agent-server.yaml")
+	// The config file location cannot be changed.
+	v.SetConfigFile("/opt/agent-server/agent-server.yaml")
 	err := v.ReadInConfig()
 	if err != nil {
-		log.Error("Failed to read config file,", err)
 		return
 	}
 	Ip = v.GetString("service.ip")
@@ -38,25 +35,15 @@ func init() {
 	LogTime = v.GetInt("logrotate.time")
 	CertPath = v.GetString("cert.path")
 	TLSEnabled = v.GetBool("tls.enabled")
-	log.Infof("Default config value is loaded.")
 }
 
 // Setup values customized by users
-func SetupConfig(cert string, logPath string, config string, tlsEnabled bool) {
+func SetupConfig(cert string, logPath string, tlsEnabled bool) {
 	if !utils.IsEmpty(cert) {
 		CertPath = cert
-		log.Infof("Setup cert path %s from cmd line.", CertPath)
 	}
 	if !utils.IsEmpty(logPath) {
 		LogPath = logPath
-		log.Infof("Setup log path %s from cmd line.", LogPath)
-	}
-	if !utils.IsEmpty(config) {
-		ConfigPath = config
-		log.Infof("Setup config path %s from cmd line.", ConfigPath)
 	}
 	TLSEnabled = tlsEnabled
-	log.Infof("LogPath: %s, LogCount:%d", LogPath, LogCount)
-	log.Infof("LogSize: %d, LogTime:%d", LogSize, LogTime)
-	log.Infof("CertPath: %s, TLSEnabled:%v", CertPath, TLSEnabled)
 }

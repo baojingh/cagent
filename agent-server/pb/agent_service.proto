@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// The line must exist
+// protoc-gen-go: unable to determine Go import path for "helloworld.proto"
+option go_package = "agent-server/pb";
+
+package pb;
+
+enum Status {
+    OK = 0;
+    ERR = 1;
+}
+
+// Update target service params
+message AgentServiceRequest {
+    string component = 1;
+    string hopstIP = 2;
+    map<string,string> paramMap = 3;
+    string timestamp = 4;
+}
+
+// Upload files with big size
+message AgentFileRequest {
+    string component = 1;
+    string hopstIP = 2;
+    bytes content = 3;
+    string timestamp = 4;
+
+}
+
+// response from server
+message AgentResponse {
+    Status status = 1;
+    string data = 2;
+    string timestamp = 3;
+}
+
+service AgentAction {
+    rpc UpdateServiceFile (AgentServiceRequest) returns (AgentResponse);
+    rpc UploadFile (AgentFileRequest) returns (AgentResponse);
+}

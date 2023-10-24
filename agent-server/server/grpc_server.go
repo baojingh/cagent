@@ -3,6 +3,7 @@ package server
 import (
 	"agent-server/config"
 	logger "agent-server/log"
+	"agent-server/pb"
 	"fmt"
 	"net"
 
@@ -28,6 +29,7 @@ func StartGrpcServer() {
 	}
 
 	grpcServer = grpc.NewServer(opts...)
+	pb.RegisterAgentActionServer(grpcServer, &AgentServcie{})
 	log.Infof("GPRC Server starts in port %d", port)
 	grpcServer.Serve(listener)
 }

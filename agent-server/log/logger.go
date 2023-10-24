@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"agent-server/config"
 	"fmt"
 	"io"
 	"os"
@@ -15,13 +16,13 @@ var log = logrus.New()
 
 // init logs
 func init() {
-	path := "/var/log/agent-server/"
+	path := config.LogPath
 
 	writer, err := rotate.New(
 		filepath.Join(path, fmt.Sprintf("agent-server-%s.log", "%Y%m%d")),
 		rotate.WithLinkName(filepath.Join(path, "agent-server.log")),
-		rotate.WithRotationCount(5),
-		rotate.WithRotationTime(time.Hour*24),
+		rotate.WithRotationCount(uint(config.LogCount)),
+		rotate.WithRotationTime(time.Hour*time.Duration(config.LogTime)),
 	)
 	if err == nil {
 		log.SetOutput(io.MultiWriter(writer, os.Stdout))

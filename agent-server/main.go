@@ -24,7 +24,6 @@ var (
 	tlsEnabled = flag.Bool("tls", false, "enable TLS")
 	certPath   = flag.String("cert", "", "cert directory")
 	logPath    = flag.String("log", "", "log directory")
-	configPath = flag.String("config", "", "log directory")
 )
 
 func main() {
@@ -32,7 +31,7 @@ func main() {
 	go PrepareforShutdown()
 	flag.Parse()
 	// Values from config file will be overwrited by the command value
-	config.SetupConfig(*certPath, *logPath, *configPath, *tlsEnabled)
+	config.SetupConfig(*certPath, *logPath, *tlsEnabled)
 	server.StartGrpcServer()
 }
 
@@ -41,7 +40,8 @@ func PrepareforShutdown() {
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM, os.Kill)
 	sig := <-signalChan
-	log.Warnf("Receive signal %s and exit", sig)
+	close(signalChan)
+	log.Warnf("Receive signal %s and prepare for exitting", sig)
 	server.StopGRPCServer()
 	os.Exit(0)
 }
