@@ -9,13 +9,20 @@ gen:clean
 build-linux64: pre
 	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X 'main.buildVersion=v$(VERSION)' -X 'main.buildTime=$(CURRENT_TIME)'" -x -v -o build/agent-server-linux64
 
-run:build-linux64
-	build/agent-server-linux64
+cp:build-linux64
+	sudo cp build/agent-server-linux64 /usr/loca/bin/
+
+run:cp
+	agent-server-linux64
 
 clean:
-	rm -rf build
-	rm -rf var/log/agent-server/
+	rm -rf build/
+	rm -rf opt/agent-server/*
+	rm -rf /var/log/agent-server/*
 	rm -rf pb/*.go
 
 pre:
-	mkdir -p /var/log/agent-server/ build
+	mkdir -p /var/log/agent-server/
+	mkdir -p build/
+	mkdir -p /opt/agent-server/
+	cp setting/agent-server.yaml /opt/agent-server/

@@ -57,13 +57,6 @@ func SetupConfig(cert string, logPath string, config string, tlsEnabled bool) {
 	}
 	TLSEnabled = tlsEnabled
 	log.Infof("LogPath: %s, LogCount:%d", LogPath, LogCount)
-
-	log.Infof(`LogPath: %s, LogCount:%d, 
-		LogSize: %d, LogTime: %d, CertPath :%s, TLSEnabled: %v`,
-		LogPath, LogCount, LogSize, LogTime,
-		CertPath, TLSEnabled)
-	log.Infof(`LogPath: %s, LogCount:%d, 
-	LogSize: %d, LogTime: %d, CertPath :%s, TLSEnabled: %v`,
-		LogPath, LogCount, LogSize, LogTime,
-		CertPath, TLSEnabled)
+	log.Infof("LogSize: %d, LogTime:%d", LogSize, LogTime)
+	log.Infof("CertPath: %s, TLSEnabled:%v", CertPath, TLSEnabled)
 }
