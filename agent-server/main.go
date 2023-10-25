@@ -29,7 +29,7 @@ func PrepareforShutdown() {
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM, os.Kill)
 	sig := <-signalChan
 	close(signalChan)
-	log.Warnf("Receive signal %s and prepare for exitting", sig)
+	log.Warnf("Receive signal %s and prepare for exitting...", sig)
 	server.StopGRPCServer()
 	os.Exit(0)
 }
