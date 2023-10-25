@@ -18,6 +18,7 @@ import (
 var log = logger.New()
 
 func main() {
+	log.Info("Prepare for GRPC Server startup...")
 	go PrepareforShutdown()
 	server.StartGrpcServer()
 }
