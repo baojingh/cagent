@@ -39,7 +39,5 @@ service AgentAction {
     rpc UpdateFluentbitToken (AgentServiceRequest) returns (AgentResponse);
     rpc UpdateFluentbitHost (AgentServiceRequest) returns (AgentResponse);
     rpc UpdateFluentbitPort (AgentServiceRequest) returns (AgentResponse);
-    rpc UpdateSuricataNet (AgentServiceRequest) returns (AgentResponse);
-    rpc UpdateServiceFile (AgentServiceRequest) returns (AgentResponse);
-    rpc UploadRuleFile (AgentFileRequest) returns (AgentResponse);
+    rpc UploadBigFile (AgentFileRequest) returns (AgentResponse);
 }
