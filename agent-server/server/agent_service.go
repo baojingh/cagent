@@ -31,7 +31,7 @@ func (agentService *AgentServcie) UpdateFluentbitHost(ctx context.Context,
 		res.Data = err.Error()
 		return res, err
 	}
-	log.Infof("CMD %s is executed success, output: %s", cmdName, out)
+	log.Infof("CMD %s is executed success.", cmdName)
 	res.Data = out
 	return res, nil
 }

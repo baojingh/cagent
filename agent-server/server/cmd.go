@@ -11,7 +11,7 @@ func shellENV() string {
 	if s == "" {
 		s = "/bin/bash"
 	}
-	log.Infof("Current host has shell eenv: %s", s)
+	log.Infof("Current host has shell env: %s", s)
 	return s
 }
 

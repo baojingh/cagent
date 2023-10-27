@@ -17,13 +17,8 @@ import (
   Description:
 */
 
-const (
-	defaultName = "bob"
-)
-
 var (
 	addr = flag.String("addr", "localhost:50051", "the address to connect to")
-	name = flag.String("name", defaultName, "Name to greet")
 )
 
 func main() {
@@ -48,5 +43,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v, %v", err, r)
 	}
-	log.Printf("Res: %s", r.GetData())
+	log.Printf("success")
 }

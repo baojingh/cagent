@@ -12,11 +12,10 @@ build-linux64: pre
 	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X 'main.buildVersion=v$(VERSION)' -X 'main.buildTime=$(CURRENT_TIME)'" -x -v -o build/agentctl-linux64
 
 cp:build-linux64
-	sudo cp build/agentctl-linux64 /usr/local/bin/agentctl-linux64
 	cp -r cert/* /opt/agentctl/cert/
 
 run:cp
-	agentctl-linux64
+	build/agentctl-linux64
 
 clean:
 	rm -rf build/

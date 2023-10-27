@@ -60,6 +60,13 @@ ctl has a dedicated feature to do the biz.
 ```
 it config   user.email  "baojingh@163.com"
 git config   user.name  "baojingh"
+
+
+sudo mkdir -p /var/log/agentctl /opt/agentctl/cert
+sudo chown hadoop:hadoop -R /var/log/agentctl /opt/agentctl/cert
+
+sudo mkdir -p /var/log/agent-server /opt/agent-server/cert
+sudo chown hadoop:hadoop -R /var/log/agent-server /opt/agent-server/cert
 ```
 
 
