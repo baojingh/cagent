@@ -25,6 +25,9 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 Update your PATH so that the protoc compiler can find the plugins:
 export PATH="$PATH:$(go env GOPATH)/bin"
 
+echo "export PATH="$PATH:$(go env GOPATH)/bin"" >> /etc/profile
+. /etc/profile
+
 ```
 protoc --go_out=. --go_opt=paths=source_relative     --go-grpc_out=. --go-grpc_opt=paths=source_relative     helloworld/helloworld.proto
 ```

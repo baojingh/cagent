@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AgentActionClient interface {
-	UpdateServiceFile(ctx context.Context, in *AgentServiceRequest, opts ...grpc.CallOption) (*AgentResponse, error)
-	UploadFile(ctx context.Context, in *AgentFileRequest, opts ...grpc.CallOption) (*AgentResponse, error)
+	UpdateFluentbitHost(ctx context.Context, in *AgentServiceRequest, opts ...grpc.CallOption) (*AgentResponse, error)
+	UploadBigFile(ctx context.Context, in *AgentFileRequest, opts ...grpc.CallOption) (*AgentResponse, error)
 }
 
 type agentActionClient struct {
@@ -34,18 +34,18 @@ func NewAgentActionClient(cc grpc.ClientConnInterface) AgentActionClient {
 	return &agentActionClient{cc}
 }
 
-func (c *agentActionClient) UpdateServiceFile(ctx context.Context, in *AgentServiceRequest, opts ...grpc.CallOption) (*AgentResponse, error) {
+func (c *agentActionClient) UpdateFluentbitHost(ctx context.Context, in *AgentServiceRequest, opts ...grpc.CallOption) (*AgentResponse, error) {
 	out := new(AgentResponse)
-	err := c.cc.Invoke(ctx, "/pb.AgentAction/UpdateServiceFile", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.AgentAction/UpdateFluentbitHost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *agentActionClient) UploadFile(ctx context.Context, in *AgentFileRequest, opts ...grpc.CallOption) (*AgentResponse, error) {
+func (c *agentActionClient) UploadBigFile(ctx context.Context, in *AgentFileRequest, opts ...grpc.CallOption) (*AgentResponse, error) {
 	out := new(AgentResponse)
-	err := c.cc.Invoke(ctx, "/pb.AgentAction/UploadFile", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.AgentAction/UploadBigFile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +56,8 @@ func (c *agentActionClient) UploadFile(ctx context.Context, in *AgentFileRequest
 // All implementations must embed UnimplementedAgentActionServer
 // for forward compatibility
 type AgentActionServer interface {
-	UpdateServiceFile(context.Context, *AgentServiceRequest) (*AgentResponse, error)
-	UploadFile(context.Context, *AgentFileRequest) (*AgentResponse, error)
+	UpdateFluentbitHost(context.Context, *AgentServiceRequest) (*AgentResponse, error)
+	UploadBigFile(context.Context, *AgentFileRequest) (*AgentResponse, error)
 	mustEmbedUnimplementedAgentActionServer()
 }
 
@@ -65,11 +65,11 @@ type AgentActionServer interface {
 type UnimplementedAgentActionServer struct {
 }
 
-func (UnimplementedAgentActionServer) UpdateServiceFile(context.Context, *AgentServiceRequest) (*AgentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateServiceFile not implemented")
+func (UnimplementedAgentActionServer) UpdateFluentbitHost(context.Context, *AgentServiceRequest) (*AgentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFluentbitHost not implemented")
 }
-func (UnimplementedAgentActionServer) UploadFile(context.Context, *AgentFileRequest) (*AgentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadFile not implemented")
+func (UnimplementedAgentActionServer) UploadBigFile(context.Context, *AgentFileRequest) (*AgentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadBigFile not implemented")
 }
 func (UnimplementedAgentActionServer) mustEmbedUnimplementedAgentActionServer() {}
 
@@ -84,38 +84,38 @@ func RegisterAgentActionServer(s grpc.ServiceRegistrar, srv AgentActionServer) {
 	s.RegisterService(&AgentAction_ServiceDesc, srv)
 }
 
-func _AgentAction_UpdateServiceFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AgentAction_UpdateFluentbitHost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AgentServiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AgentActionServer).UpdateServiceFile(ctx, in)
+		return srv.(AgentActionServer).UpdateFluentbitHost(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.AgentAction/UpdateServiceFile",
+		FullMethod: "/pb.AgentAction/UpdateFluentbitHost",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AgentActionServer).UpdateServiceFile(ctx, req.(*AgentServiceRequest))
+		return srv.(AgentActionServer).UpdateFluentbitHost(ctx, req.(*AgentServiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AgentAction_UploadFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AgentAction_UploadBigFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AgentFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AgentActionServer).UploadFile(ctx, in)
+		return srv.(AgentActionServer).UploadBigFile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.AgentAction/UploadFile",
+		FullMethod: "/pb.AgentAction/UploadBigFile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AgentActionServer).UploadFile(ctx, req.(*AgentFileRequest))
+		return srv.(AgentActionServer).UploadBigFile(ctx, req.(*AgentFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,12 +128,12 @@ var AgentAction_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AgentActionServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UpdateServiceFile",
-			Handler:    _AgentAction_UpdateServiceFile_Handler,
+			MethodName: "UpdateFluentbitHost",
+			Handler:    _AgentAction_UpdateFluentbitHost_Handler,
 		},
 		{
-			MethodName: "UploadFile",
-			Handler:    _AgentAction_UploadFile_Handler,
+			MethodName: "UploadBigFile",
+			Handler:    _AgentAction_UploadBigFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

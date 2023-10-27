@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // The line must exist
 // protoc-gen-go: unable to determine Go import path for "helloworld.proto"
-option go_package = "agent-server/pb";
+option go_package = ".;pb";
 
 package pb;
 
@@ -36,8 +36,6 @@ message AgentResponse {
 }
 
 service AgentAction {
-    rpc UpdateFluentbitToken (AgentServiceRequest) returns (AgentResponse);
     rpc UpdateFluentbitHost (AgentServiceRequest) returns (AgentResponse);
-    rpc UpdateFluentbitPort (AgentServiceRequest) returns (AgentResponse);
     rpc UploadBigFile (AgentFileRequest) returns (AgentResponse);
 }
