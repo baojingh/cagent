@@ -41,12 +41,12 @@ func main() {
 	defer cancel()
 
 	paramMap := make(map[string]string, 10)
-	paramMap["name"] = "bob"
+	paramMap["host"] = "99.99.99"
 
 	req := &pb.AgentServiceRequest{HopstIP: "11", Component: "vws", ParamMap: paramMap}
-	r, err := c.UpdateServiceFile(ctx, req)
+	r, err := c.UpdateFluentbitHost(ctx, req)
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Fatalf("%v, %v", err, r)
 	}
-	log.Printf("Greeting: %s", r.GetData())
+	log.Printf("Res: %s", r.GetData())
 }
