@@ -4,5 +4,5 @@ import "testing"
 
 func TestExec(t *testing.T) {
 	// agent-server/command/test.sh
-	Exec("vs")
+	ExecuteShellCmd("fluentbit_host", "host=11.22.99.00")
 }
