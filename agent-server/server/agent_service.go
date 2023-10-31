@@ -14,7 +14,7 @@ type AgentServcie struct {
 
 func (agentService *AgentServcie) UpdateFluentbitHost(ctx context.Context,
 	request *pb.AgentServiceRequest) (*pb.AgentResponse, error) {
-
+	log.Info("Server receive Request, %v", request)
 	res := &pb.AgentResponse{
 		Timestamp: time.Now().Format(constant.DATE_FORMAT),
 		Status:    pb.Status_OK,

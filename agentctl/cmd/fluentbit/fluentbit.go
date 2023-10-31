@@ -60,11 +60,12 @@ func UpdateFluentbitHost(cmd *cobra.Command, args []string) {
 		Component: "fluentbit",
 		ParamMap:  paramMap,
 	}
+	log.Infof("Client compose cmd params, %v", req)
 	r, err := c.UpdateFluentbitHost(ctx, req)
 	if err != nil {
 		log.Fatalf("%v, %v", err, r)
 	}
-	log.Printf("Update fluentbit service success, info %v", req)
+	log.Printf("Update fluentbit service success, %v", r)
 }
 
 func init() {
