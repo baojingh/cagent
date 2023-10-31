@@ -21,7 +21,7 @@ var (
 	addr = flag.String("addr", "localhost:50051", "the address to connect to")
 )
 
-func main() {
+func main1() {
 	flag.Parse()
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))

@@ -71,3 +71,6 @@ sudo chown hadoop:hadoop -R /var/log/agent-server /opt/agent-server/cert
 
 
 
+# Ref
+https://www.cnblogs.com/borey/p/5715641.html
+

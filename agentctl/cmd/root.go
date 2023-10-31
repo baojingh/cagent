@@ -1,26 +1,29 @@
 package cmd
 
 import (
+	"agentctl/cmd/fluentbit"
+	"agentctl/cmd/suricata"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "hello",
-	Short: "thisi s a short",
-	Long: `benmiobsdkmp niokvweiop niobsd, nuivbw
-			b,mdop[,pbnd]
-			`,
+var buildTime string
+var buildVersion string
+
+var RootCmd = &cobra.Command{
+	Use:     "agentctl",
+	Short:   "agentctl helps update configuration from server side",
+	Long:    `agentctl is client to communicate with grpc server with modules.`,
+	Version: fmt.Sprintf("%s, build %s", buildVersion, buildTime),
 	Run: func(cmd *cobra.Command, args []string) {
-		//
+		cmd.Help()
+		os.Exit(0)
 	},
 }
 
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(os.Stderr, err)
-		os.Exit(1)
-	}
+func init() {
+	RootCmd.AddCommand(fluentbit.FluentbitCmd)
+	RootCmd.AddCommand(suricata.SuricataCmd)
 }
