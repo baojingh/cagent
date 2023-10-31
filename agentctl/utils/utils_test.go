@@ -23,3 +23,18 @@ func TestMap2StrWithEqu(t *testing.T) {
 	str := Map2StrWithEqu(m)
 	fmt.Println(str)
 }
+
+func TestValidateIP(t *testing.T) {
+	ip := ""
+	res := ValidateIP(ip)
+	fmt.Println(res)
+
+	ip = "1.2"
+	res = ValidateIP(ip)
+	fmt.Println(res)
+
+	ip = "1.2.3.4"
+	res = ValidateIP(ip)
+	fmt.Println(res)
+
+}

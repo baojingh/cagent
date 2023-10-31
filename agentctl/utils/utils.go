@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"net"
 	"strings"
 )
 
@@ -32,5 +33,18 @@ func Map2StrWithEqu(tmp map[string]string) string {
 	}
 	res := builder.String()
 	res = strings.TrimRight(res, ",")
+	return res
+}
+
+func ValidateIP(ip string) bool {
+	res := net.ParseIP(ip)
+	if res == nil {
+		return false
+	}
+	return true
+}
+
+func SplitStr(str string, splitor string) []string {
+	res := strings.Split(str, splitor)
 	return res
 }

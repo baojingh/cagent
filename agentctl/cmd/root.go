@@ -9,8 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var buildTime string
-var buildVersion string
+var (
+	buildTime    string
+	buildVersion string
+)
 
 var RootCmd = &cobra.Command{
 	Use:     "agentctl",
@@ -24,6 +26,11 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
+	RootCmd.PersistentFlags().String("ip", "", "server ip address")
+	RootCmd.PersistentFlags().String("port", "", "server port")
+	RootCmd.MarkFlagRequired("ip")
+	RootCmd.MarkFlagRequired("port")
+
 	RootCmd.AddCommand(fluentbit.FluentbitCmd)
 	RootCmd.AddCommand(suricata.SuricataCmd)
 }
