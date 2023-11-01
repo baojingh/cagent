@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"net"
+	"os"
 	"strings"
 )
 
@@ -47,4 +48,12 @@ func ValidateIP(ip string) bool {
 func SplitStr(str string, splitor string) []string {
 	res := strings.Split(str, splitor)
 	return res
+}
+
+func IsFileExist(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return true
 }

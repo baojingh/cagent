@@ -1,44 +1,50 @@
 package suricata
 
 import (
-	logger "agentctl/log"
 	"agentctl/pb"
 	"agentctl/utils"
 	"context"
 	"fmt"
-	"time"
+	"io"
+	"os"
 
-	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var log = logger.New()
-
-var SuricataCmd = &cobra.Command{
-	Use:   "suricata",
-	Short: "Manage suricata service",
-	Long:  ``,
-	Run:   UpdateSuricataFile,
+type AgentFileServiceServer struct {
+	pb.UnimplementedAgentFileServiceServer
 }
 
-func UpdateSuricataFile(cmd *cobra.Command, args []string) {
-	ip, _ := cmd.Flags().GetString("ip")
-	port, _ := cmd.Flags().GetString("port")
-	config, _ := cmd.Flags().GetString("config")
-	isValid := utils.ValidateIP(ip)
-	isEmp := utils.IsEmpty(config)
+type ClientService struct {
+	ip        string
+	port      string
+	filePath  string
+	batchSize int
+	client    pb.AgentFileServiceClient
+}
 
+func NewService(ip string, port string, filepath string, batchSize int) *ClientService {
+	cli := &ClientService{
+		batchSize: batchSize,
+	}
+	return cli
+}
+
+func (cli *ClientService) UploadSuricataFile() {
+	ip := cli.ip
+	port := cli.port
+	file := cli.filePath
+	isValid := utils.ValidateIP(ip)
+	isExist := utils.IsFileExist(file)
 	if !isValid {
 		log.Errorf("Param ip %s is not validated", ip)
 		return
 	}
-	if isEmp {
-		log.Error("Param config is empty")
+	if !isExist {
+		log.Errorf("File %s not exist.", file)
 		return
 	}
-	paramMap := make(map[string]string)
-
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%s", ip, port),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -47,25 +53,49 @@ func UpdateSuricataFile(cmd *cobra.Command, args []string) {
 	}
 	log.Info("Connect to server success.")
 	defer conn.Close()
-	c := pb.NewAgentActionClient(conn)
-
-	// Contact the server and print out its response.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	req := &pb.AgentServiceRequest{
-		HopstIP:   ip,
-		Component: "fluentbit",
-		ParamMap:  paramMap,
-	}
-	log.Infof("Client compose cmd params, %v", req)
-	r, err := c.UpdateFluentbitHost(ctx, req)
+	cli.client = pb.NewAgentFileServiceClient(conn)
+	err = cli.doUpload()
 	if err != nil {
-		log.Fatalf("%v, %v", err, r)
+		log.Error(err)
 	}
-	log.Printf("Update fluentbit service success, %v", r)
 }
 
-func init() {
-	SuricataCmd.AddCommand(SuricataUploadCmd)
+func (cli *ClientService) doUpload() error {
+	filePath := cli.filePath
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Errorf("Fail to open file %s, err: %v", filePath, err)
+		return err
+	}
+	defer file.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	stream, err := cli.client.UploadBigFile(ctx)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	buf := make([]byte, 1024*1024)
+	for {
+		br, err := file.Read(buf)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+		req := &pb.AgentFileRequest{
+			Chunk: buf[:br],
+		}
+		if err := stream.Send(req); err != nil {
+			log.Error("Client fail to send data.", err)
+			return err
+		}
+	}
+	res, _ := stream.CloseAndRecv()
+	cancel()
+	log.Infof("Client get res from server, %v", res)
+	return nil
+
 }
