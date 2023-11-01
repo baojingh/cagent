@@ -1,8 +1,6 @@
 package suricata
 
 import (
-	"agentctl/cmd/suricata"
-	"agentctl/constant"
 	logger "agentctl/log"
 	"agentctl/pb"
 	"agentctl/utils"
@@ -39,7 +37,7 @@ func UpdateSuricataFile(cmd *cobra.Command, args []string) {
 		log.Error("Param config is empty")
 		return
 	}
-	paramMap := splitConfig2Map(config)
+	paramMap := make(map[string]string)
 
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%s", ip, port),
@@ -69,6 +67,5 @@ func UpdateSuricataFile(cmd *cobra.Command, args []string) {
 }
 
 func init() {
-	SuricataCmd.AddCommand(suricata.SuricataCmd)
-	SuricataCmd.Flags().String(constant.SURICATA_PARAM_FILE, "", "suricata file")
+	SuricataCmd.AddCommand(SuricataUploadCmd)
 }
