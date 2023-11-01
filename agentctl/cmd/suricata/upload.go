@@ -7,8 +7,8 @@ import (
 var SuricataUploadCmd = &cobra.Command{
 	Use:   "upload",
 	Short: "Upload suricata files",
-	Long:  ``,
-	Run:   UploadSuricataFile,
+
+	Run: UploadSuricataFile,
 }
 
 func UploadSuricataFile(cmd *cobra.Command, args []string) {
