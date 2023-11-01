@@ -1,6 +1,7 @@
 package suricata
 
 import (
+	logger "agentctl/log"
 	"agentctl/pb"
 	"agentctl/utils"
 	"context"
@@ -11,6 +12,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
+
+var log = logger.New()
 
 type AgentFileServiceServer struct {
 	pb.UnimplementedAgentFileServiceServer
@@ -26,6 +29,9 @@ type ClientService struct {
 
 func NewService(ip string, port string, filepath string, batchSize int) *ClientService {
 	cli := &ClientService{
+		ip:        ip,
+		port:      port,
+		filePath:  filepath,
 		batchSize: batchSize,
 	}
 	return cli
@@ -51,16 +57,15 @@ func (cli *ClientService) UploadSuricataFile() {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	log.Info("Connect to server success.")
-	defer conn.Close()
+	log.Infof("Connect to server %s %s success.", ip, port)
 	cli.client = pb.NewAgentFileServiceClient(conn)
-	err = cli.doUpload()
+	err = cli.doUpload(conn)
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func (cli *ClientService) doUpload() error {
+func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 	filePath := cli.filePath
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -68,14 +73,17 @@ func (cli *ClientService) doUpload() error {
 		return err
 	}
 	defer file.Close()
+	defer conn.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	stream, err := cli.client.UploadBigFile(ctx)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	buf := make([]byte, 1024*1024)
+	buf := make([]byte, cli.batchSize)
 	for {
 		br, err := file.Read(buf)
 		if err == io.EOF {
@@ -94,7 +102,6 @@ func (cli *ClientService) doUpload() error {
 		}
 	}
 	res, _ := stream.CloseAndRecv()
-	cancel()
 	log.Infof("Client get res from server, %v", res)
 	return nil
 

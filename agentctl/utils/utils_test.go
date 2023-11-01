@@ -37,4 +37,7 @@ func TestValidateIP(t *testing.T) {
 	res = ValidateIP(ip)
 	fmt.Println(res)
 
+	ip = "127.0.0.1"
+	res = ValidateIP(ip)
+	fmt.Println(res)
 }

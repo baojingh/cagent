@@ -2,17 +2,14 @@ package suricata
 
 /*
 	command entrypoint
-
 */
 
 import (
 	"agentctl/constant"
-	logger "agentctl/log"
 
 	"github.com/spf13/cobra"
 )
 
-var log = logger.New()
 var (
 	filepath  string
 	batchSize int
@@ -22,7 +19,7 @@ var SuricataCmd = &cobra.Command{
 	Use:   "suricata",
 	Short: "Manage suricata service",
 	Long:  ``,
-	Run:   nil,
+	Run:   func(cmd *cobra.Command, args []string) {},
 }
 
 var SuricataUploadCmd = &cobra.Command{

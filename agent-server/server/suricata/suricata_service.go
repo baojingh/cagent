@@ -10,16 +10,12 @@ import (
 
 var log = logger.New()
 
-type FileServiceServer struct {
+type AgentFileServiceServer struct {
 	pb.UnimplementedAgentFileServiceServer
 }
 
-func NewServer() *FileServiceServer {
-	s := &FileServiceServer{}
-	return s
-}
-
-func (g *FileServiceServer) ReceiveBigFile(stream pb.AgentFileService_UploadBigFileServer) error {
+func (service *AgentFileServiceServer) UploadBigFile(
+	stream pb.AgentFileService_UploadBigFileServer) error {
 	file := NewFile()
 	var fileSize uint32
 	fileSize = 0
@@ -31,7 +27,7 @@ func (g *FileServiceServer) ReceiveBigFile(stream pb.AgentFileService_UploadBigF
 	for {
 		req, err := stream.Recv()
 		if file.FilePath == "" {
-			file.SetFile("rules", "./")
+			file.SetFile("rules", "/data/tmp/rr")
 		}
 		if err == io.EOF {
 			break
@@ -51,5 +47,4 @@ func (g *FileServiceServer) ReceiveBigFile(stream pb.AgentFileService_UploadBigF
 	}
 	err := stream.SendAndClose(res)
 	return err
-
 }

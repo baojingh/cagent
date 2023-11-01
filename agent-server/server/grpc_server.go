@@ -32,7 +32,8 @@ func StartGrpcServer() {
 
 	grpcServer = grpc.NewServer(opts...)
 	pb.RegisterAgentActionServer(grpcServer, &fluentbit.AgentServcie{})
-	pb.RegisterAgentFileServiceServer(grpcServer, &suricata.FileServiceServer{})
+
+	pb.RegisterAgentFileServiceServer(grpcServer, &suricata.AgentFileServiceServer{})
 
 	log.Infof("GPRC Server starts in port %d", port)
 	grpcServer.Serve(listener)
