@@ -4,6 +4,8 @@ import (
 	"agent-server/config"
 	logger "agent-server/log"
 	"agent-server/pb"
+	"agent-server/server/fluentbit"
+	"agent-server/server/suricata"
 	"fmt"
 	"net"
 
@@ -29,7 +31,9 @@ func StartGrpcServer() {
 	}
 
 	grpcServer = grpc.NewServer(opts...)
-	pb.RegisterAgentActionServer(grpcServer, &AgentServcie{})
+	pb.RegisterAgentActionServer(grpcServer, &fluentbit.AgentServcie{})
+	pb.RegisterAgentFileServiceServer(grpcServer, &suricata.FileServiceServer{})
+
 	log.Infof("GPRC Server starts in port %d", port)
 	grpcServer.Serve(listener)
 }

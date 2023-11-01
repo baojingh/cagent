@@ -1,10 +1,13 @@
-package server
+package command
 
 import (
+	logger "agentctl/log"
 	"fmt"
 	"os"
 	"os/exec"
 )
+
+var log = logger.New()
 
 func shellENV() string {
 	s := os.Getenv("SHELL")
