@@ -34,7 +34,9 @@ var SuricataUploadCmd = &cobra.Command{
 }
 
 func init() {
+	// MarkFlagRequired means the param is needed
 	SuricataUploadCmd.MarkFlagRequired(constant.SURICATA_PARAM_FILE)
+	// Flags means it's just be used in current cmd
 	SuricataUploadCmd.Flags().StringVarP(&filepath, "file", "f", "", "suricata upload file")
 	SuricataUploadCmd.Flags().IntVarP(&batchSize, "batch", "b", 1024*1024, "buffer batch size for upload")
 	SuricataCmd.AddCommand(SuricataUploadCmd)

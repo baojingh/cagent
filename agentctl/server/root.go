@@ -26,6 +26,8 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
+	// PersistentFlags means the params could be
+	// used in current cmd and its sub cmd.
 	RootCmd.PersistentFlags().String("ip", "", "server ip address")
 	RootCmd.PersistentFlags().String("port", "", "server port")
 	RootCmd.MarkFlagRequired("ip")
