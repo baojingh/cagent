@@ -18,7 +18,7 @@ type AgentFileServiceServer struct {
 func (service *AgentFileServiceServer) UploadBigFile(
 	stream pb.AgentFileService_UploadBigFileServer) error {
 	file := NewFile()
-	var fileSize uint32
+	var fileSize uint64
 	fileName := ""
 	fileSize = 0
 	defer func() {
@@ -27,6 +27,7 @@ func (service *AgentFileServiceServer) UploadBigFile(
 			return
 		}
 	}()
+	log.Infof("Server starts to process file.")
 	for {
 		req, err := stream.Recv()
 		fileName = req.GetFileName()
@@ -36,13 +37,12 @@ func (service *AgentFileServiceServer) UploadBigFile(
 		if err == io.EOF {
 			break
 		}
-		if err != nil {
-			log.Fatal(err)
-		}
 		chunk := req.GetChunk()
-		fileSize += uint32(len(chunk))
+		fileSize += uint64(len(chunk))
+		log.Debugf("Receive a chunk with size %d", fileSize)
 		if err := file.Write(chunk); err != nil {
-			log.Fatal(err)
+			log.Errorf("Fail to write chunk into file, %v", err)
+			break
 		}
 	}
 	name := filepath.Base(file.FilePath)
@@ -52,6 +52,6 @@ func (service *AgentFileServiceServer) UploadBigFile(
 			Status:    pb.Status_OK,
 			FileName:  name,
 		})
-	log.Infof("Receive file %s, file size: %d.", file.FilePath, fileSize)
+	log.Infof("Saved file %s, file size: %d.", file.FilePath, fileSize)
 	return err
 }

@@ -9,8 +9,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
 	path "path/filepath"
 	"strings"
+	"syscall"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -29,6 +31,9 @@ type ClientService struct {
 	batchSize int
 	client    pb.AgentFileServiceClient
 }
+
+var conn *grpc.ClientConn
+var stream pb.AgentFileService_UploadBigFileClient
 
 func NewService(ip string, port string, filepath string, batchSize int) *ClientService {
 	cli := &ClientService{
@@ -62,10 +67,18 @@ func (cli *ClientService) UploadSuricataFile() {
 	}
 	log.Infof("Connect to server %s %s success.", ip, port)
 	cli.client = pb.NewAgentFileServiceClient(conn)
-	err = cli.doUpload(conn)
-	if err != nil {
-		log.Error(err)
-	}
+
+	signalChan := make(chan os.Signal, 1)
+	go func(signalChan chan os.Signal) {
+		err = cli.doUpload(conn)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		// send signal when file upload success
+		signalChan <- syscall.SIGTERM
+	}(signalChan)
+	ready4Shutdown(signalChan, conn)
 }
 
 func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
@@ -97,8 +110,9 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 			log.Error(err)
 			return err
 		}
+		chunk := buf[:br]
 		req := &pb.AgentFileRequest{
-			Chunk:    buf[:br],
+			Chunk:    chunk,
 			FileName: filename,
 		}
 		if err := stream.Send(req); err != nil {
@@ -108,12 +122,27 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 	}
 	res, _ := stream.CloseAndRecv()
 	if strings.TrimSpace(res.GetStatus().String()) != "OK" {
-		msg := fmt.Sprintf("Server said that upload file %s failure.", res.GetFileName())
+		msg := fmt.Sprintf("Server said that upload file [%s] failure.", res.GetFileName())
 		log.Errorf(msg)
 		return errors.New(msg)
 	} else {
-		log.Infof("Server said that upload file %s success.", res.GetFileName())
+		log.Infof("Upload file [%s] success.", res.GetFileName())
 	}
 	return nil
+}
 
+// Block client process and ready for exit
+// U think client should close active stream, but I have not done it.
+func ready4Shutdown(signalChan chan os.Signal, conn *grpc.ClientConn) {
+	defer func() {
+		if conn != nil {
+			conn.Close()
+		}
+		if stream != nil {
+			stream.CloseSend()
+		}
+	}()
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM, os.Kill)
+	<-signalChan
+	close(signalChan)
 }

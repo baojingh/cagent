@@ -21,6 +21,22 @@ func main() {
 	log.Info("Prepare for GRPC Server startup...")
 	go PrepareforShutdown()
 	server.StartGrpcServer()
+
+	// wg := &sync.WaitGroup{}
+
+	// wg.Add(1)
+	// go func() {
+	// 	defer wg.Done()
+
+	// }()
+
+	// wg.Add(1)
+	// go func() {
+	// 	defer wg.Done()
+	// 	server.StartGrpcServer()
+	// }()
+
+	// wg.Wait()
 }
 
 // shutdown GRPC Server gracefully

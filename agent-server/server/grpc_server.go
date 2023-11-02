@@ -6,8 +6,10 @@ import (
 	"agent-server/pb"
 	"agent-server/server/fluentbit"
 	"agent-server/server/suricata"
+	"context"
 	"fmt"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -39,9 +41,23 @@ func StartGrpcServer() {
 	grpcServer.Serve(listener)
 }
 
+// GRPC server cannot be shutdown if there is any active conn or stream.
+// Process the active worker for given seconds and then kill them forcely.
 func StopGRPCServer() {
-	if grpcServer != nil {
-		grpcServer.GracefulStop()
-		log.Warn("GRPC Server shutdown gracefully")
+	ctxShut, cancelShut := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelShut()
+	go func() {
+		if grpcServer != nil {
+			grpcServer.GracefulStop()
+			log.Warn("GRPC Server Gracefully Stop")
+		}
+		cancelShut()
+	}()
+
+	select {
+	case <-ctxShut.Done():
+		log.Warn("GRPC Server Stop.")
+		grpcServer.Stop()
 	}
+
 }

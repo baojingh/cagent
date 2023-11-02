@@ -1,8 +1,8 @@
-package cmd
+package server
 
 import (
-	"agentctl/cmd/fluentbit"
-	"agentctl/cmd/suricata"
+	"agentctl/server/fluentbit"
+	"agentctl/server/suricata"
 	"fmt"
 	"os"
 
