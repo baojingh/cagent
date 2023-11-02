@@ -41,3 +41,8 @@ func TestValidateIP(t *testing.T) {
 	res = ValidateIP(ip)
 	fmt.Println(res)
 }
+
+func TestFormatDateNow(t *testing.T) {
+	res := FormatDateNow()
+	println(res)
+}

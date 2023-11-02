@@ -1,7 +1,7 @@
 package constant
 
 var (
-	DATE_FORMAT string = "2006-01-22 11:22:33"
+	DATE_FORMAT string = "2006-01-02 15:04:05"
 
 	DEFAULT_LOG_PATH  string = "/var/log/agentctl"
 	DEFAULT_LOG_COUNT int    = 1

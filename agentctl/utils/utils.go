@@ -1,10 +1,12 @@
 package utils
 
 import (
+	"agentctl/constant"
 	"encoding/json"
 	"net"
 	"os"
 	"strings"
+	"time"
 )
 
 // is the string empty
@@ -56,4 +58,9 @@ func IsFileExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func FormatDateNow() string {
+	res := time.Now().Format(constant.DATE_FORMAT)
+	return res
 }

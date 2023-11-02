@@ -5,10 +5,12 @@ import (
 	"agentctl/pb"
 	"agentctl/utils"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	path "path/filepath"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -105,8 +107,13 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 		}
 	}
 	res, _ := stream.CloseAndRecv()
-	log.Infof("Client upload file %s success", filePath)
-	log.Infof("Client receive response from server: %s", res)
+	if strings.TrimSpace(res.GetStatus().String()) != "OK" {
+		msg := fmt.Sprintf("Server said that upload file %s failure.", res.GetFileName())
+		log.Errorf(msg)
+		return errors.New(msg)
+	} else {
+		log.Infof("Server said that upload file %s success.", res.GetFileName())
+	}
 	return nil
 
 }

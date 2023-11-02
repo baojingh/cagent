@@ -5,6 +5,7 @@ import (
 	logger "agent-server/log"
 	"agent-server/pb"
 	"io"
+	"path/filepath"
 	"time"
 )
 
@@ -18,7 +19,7 @@ func (service *AgentFileServiceServer) UploadBigFile(
 	stream pb.AgentFileService_UploadBigFileServer) error {
 	file := NewFile()
 	var fileSize uint32
-	var fileName string
+	fileName := ""
 	fileSize = 0
 	defer func() {
 		if err := file.Close(); err != nil {
@@ -44,12 +45,13 @@ func (service *AgentFileServiceServer) UploadBigFile(
 			log.Fatal(err)
 		}
 	}
-	res := &pb.AgentResponse{
-		Timestamp: time.Now().Format(constant.DATE_FORMAT),
-		Status:    pb.Status_OK,
-		FileName:  fileName,
-	}
-	log.Infof("Receive file %s success, give response: %s", fileName, res.FileName)
-	err := stream.SendAndClose(res)
+	name := filepath.Base(file.FilePath)
+	err := stream.SendAndClose(
+		&pb.AgentResponse{
+			Timestamp: time.Now().Format(constant.DATE_FORMAT),
+			Status:    pb.Status_OK,
+			FileName:  name,
+		})
+	log.Infof("Receive file %s, file size: %d.", file.FilePath, fileSize)
 	return err
 }
