@@ -21,7 +21,8 @@ message AgentServiceRequest {
 
 // Upload files with big size
 message AgentFileRequest {
-    bytes chunk = 3;
+    bytes chunk = 1;
+    string fileName = 2;
 }
 
 // response from server
@@ -29,6 +30,7 @@ message AgentResponse {
     Status status = 1;
     string data = 2;
     string timestamp = 3;
+    string fileName = 4;
 }
 
 service AgentAction {

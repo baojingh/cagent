@@ -4,6 +4,7 @@ CURRENT_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
 all: clean build-linux64 run
 
 gen:
+	rm -rf pb*.go
 	protoc --go_out=. --go_opt=paths=source_relative     --go-grpc_out=. --go-grpc_opt=paths=source_relative     pb/agent_service.proto
 
 build-linux64: pre
@@ -26,3 +27,12 @@ pre:
 	mkdir -p build/
 	mkdir -p /opt/agent-server/cert
 	chmod u+x command/*.sh
+
+
+suri:
+	ls
+
+
+flu:
+	
+	build/agentctl suricata    --ip  127.0.0.1 --port 50051  upload --file  /data/tmp/suricata.rules

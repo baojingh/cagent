@@ -2,6 +2,8 @@ package suricata
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -19,17 +21,17 @@ func NewFile() *File {
 	return f
 }
 
+// Create the path if not exist
 func (file *File) SetFile(name string, path string) error {
 	file.FilePath = filepath.Join(path, name)
 
-	os.Remove(file.FilePath)
-	err := os.Mkdir(path, os.ModePerm)
-	if err != nil {
-		log.Fatal(err)
-	}
+	os.Mkdir(path, os.ModePerm)
+	// If the file already exists, it is truncated.
+	// If the file does not exist, it is created with mode 0666
 	newFile, err := os.Create(file.FilePath)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("Fail to create file %s, err: %v", file.FilePath, err)
+		return err
 	}
 	file.OutputFile = newFile
 	return nil
@@ -43,5 +45,10 @@ func (file *File) Write(chunk []byte) error {
 }
 
 func (file *File) Close() error {
+	if file.OutputFile == nil {
+		msg := fmt.Sprintf("File %s is nil", file.FilePath)
+		log.Errorf(msg)
+		return errors.New(msg)
+	}
 	return file.OutputFile.Close()
 }

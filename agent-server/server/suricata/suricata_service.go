@@ -18,16 +18,19 @@ func (service *AgentFileServiceServer) UploadBigFile(
 	stream pb.AgentFileService_UploadBigFileServer) error {
 	file := NewFile()
 	var fileSize uint32
+	var fileName string
 	fileSize = 0
 	defer func() {
-		if err := file.OutputFile.Close(); err != nil {
-			log.Fatal(err)
+		if err := file.Close(); err != nil {
+			log.Errorf("Fail to close file %s, %v", file.FilePath, err)
+			return
 		}
 	}()
 	for {
 		req, err := stream.Recv()
+		fileName = req.GetFileName()
 		if file.FilePath == "" {
-			file.SetFile("rules", "/data/tmp/rr")
+			file.SetFile(fileName, constant.DEFAULT_RULE_PATH)
 		}
 		if err == io.EOF {
 			break
@@ -44,7 +47,9 @@ func (service *AgentFileServiceServer) UploadBigFile(
 	res := &pb.AgentResponse{
 		Timestamp: time.Now().Format(constant.DATE_FORMAT),
 		Status:    pb.Status_OK,
+		FileName:  fileName,
 	}
+	log.Infof("Receive file %s success, give response: %s", fileName, res.FileName)
 	err := stream.SendAndClose(res)
 	return err
 }

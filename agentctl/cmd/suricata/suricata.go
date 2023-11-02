@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	path "path/filepath"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -75,6 +76,7 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 	defer file.Close()
 	defer conn.Close()
 
+	filename := path.Base(file.Name())
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -94,7 +96,8 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 			return err
 		}
 		req := &pb.AgentFileRequest{
-			Chunk: buf[:br],
+			Chunk:    buf[:br],
+			FileName: filename,
 		}
 		if err := stream.Send(req); err != nil {
 			log.Error("Client fail to send data.", err)
@@ -102,7 +105,8 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 		}
 	}
 	res, _ := stream.CloseAndRecv()
-	log.Infof("Client get res from server, %v", res)
+	log.Infof("Client upload file %s success", filePath)
+	log.Infof("Client receive response from server: %s", res)
 	return nil
 
 }
