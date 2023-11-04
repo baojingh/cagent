@@ -31,7 +31,8 @@ pre:
 	mkdir -p /opt/agentctl/cert
 
 suri:
-	mkdir -p /data/tmp/rules
+	sudo mkdir -p /data/tmp/rules
+	sudo chown -R hadoop:hadoop  /data/tmp/rules
 	dd if=/dev/urandom  of=/data/tmp/rules/hello.txt  count=500 bs=1M
 	build/agentctl suricata    --ip  127.0.0.1 --port 50051  upload --file  /data/tmp/rules/hello.txt
 	

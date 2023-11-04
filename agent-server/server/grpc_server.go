@@ -49,7 +49,6 @@ func StopGRPCServer() {
 	go func() {
 		if grpcServer != nil {
 			grpcServer.GracefulStop()
-			log.Warn("GRPC Server Gracefully Stop")
 		}
 		cancelShut()
 	}()
