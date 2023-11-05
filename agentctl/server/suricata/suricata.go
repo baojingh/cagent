@@ -15,7 +15,6 @@ import (
 	"syscall"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var log = logger.New()
@@ -60,8 +59,9 @@ func (cli *ClientService) UploadSuricataFile() {
 		return
 	}
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%s", ip, port),
-		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	addr := fmt.Sprintf("%s:%s", ip, port)
+	conn, err := grpc.Dial(addr)
+	// conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

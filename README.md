@@ -58,7 +58,7 @@ ctl has a dedicated feature to do the biz.
 
 # Scripts
 ```
-it config   user.email  "baojingh@163.com"
+git config   user.email  "baojingh@163.com"
 git config   user.name  "baojingh"
 
 
