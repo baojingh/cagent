@@ -1,6 +1,7 @@
 package server
 
 import (
+	logger "agentctl/log"
 	"agentctl/pb"
 	"fmt"
 
@@ -10,8 +11,9 @@ import (
 )
 
 /*
-	Create grpc connection for all commands
+Create grpc connection for all commands
 */
+var log = logger.New()
 
 func init() {
 	p, err := pool.New("127.0.0.1:8080", pool.DefaultOptions)
@@ -19,6 +21,10 @@ func init() {
 		log.Fatalf("failed to new pool: %v", err)
 	}
 	defer p.Close()
+
+	
+
+	
 
 	conn, err := p.Get()
 	if err != nil {
@@ -35,3 +41,10 @@ func init() {
 	log.Infof("Connect to server %s %s success.", ip, port)
 	cli.client = pb.NewAgentFileServiceClient(conn)
 }
+
+func getConn() *grpc.ClientConn {
+
+
+}
+
+func release
