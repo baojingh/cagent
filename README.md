@@ -42,6 +42,11 @@ ctl has a dedicated feature to do the biz.
 1. Update conf files
 2. Restart process when conf files updated success
 3. Upload files with big size, for example 50MB
+4. TLS security
+5. Client timeout
+6. health check
+7. heartbeat
+
 
 
 # Detailed Design

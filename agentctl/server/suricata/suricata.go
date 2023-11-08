@@ -80,7 +80,7 @@ func (cli *ClientService) UploadSuricataFile() {
 		// send signal when file upload success
 		signalChan <- syscall.SIGTERM
 	}(signalChan)
-	ready4Shutdown(signalChan, conn)
+	ready4Shutdown(signalChan)
 }
 
 func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
@@ -102,6 +102,7 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 		log.Error(err)
 		return err
 	}
+	defer stream.CloseSend()
 	buf := make([]byte, cli.batchSize)
 	for {
 		br, err := file.Read(buf)
@@ -135,15 +136,7 @@ func (cli *ClientService) doUpload(conn *grpc.ClientConn) error {
 
 // Block client process and ready for exit
 // U think client should close active stream, but I have not done it.
-func ready4Shutdown(signalChan chan os.Signal, conn *grpc.ClientConn) {
-	defer func() {
-		if conn != nil {
-			conn.Close()
-		}
-		if stream != nil {
-			stream.CloseSend()
-		}
-	}()
+func ready4Shutdown(signalChan chan os.Signal) {
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM, os.Kill)
 	<-signalChan
 	close(signalChan)
