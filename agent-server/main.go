@@ -20,7 +20,8 @@ var log = logger.New()
 func main() {
 	log.Info("Prepare for GRPC Server startup...")
 	go PrepareforShutdown()
-	server.StartGrpcServer()
+	go server.StartGrpcServer()
+	log.Warn("GRPC Server stops success.")
 }
 
 // shutdown GRPC Server gracefully
