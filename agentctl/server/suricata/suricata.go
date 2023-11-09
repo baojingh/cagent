@@ -3,6 +3,7 @@ package suricata
 import (
 	logger "agentctl/log"
 	"agentctl/pb"
+	"agentctl/server"
 	"agentctl/utils"
 	"context"
 	"errors"
@@ -15,7 +16,6 @@ import (
 	"syscall"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var log = logger.New()
@@ -59,15 +59,12 @@ func (cli *ClientService) UploadSuricataFile() {
 		log.Errorf("File %s not exist.", file)
 		return
 	}
-	// Set up a connection to the server.
-	addr := fmt.Sprintf("%s:%s", ip, port)
-	conn, err := grpc.Dial(addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()))
-	// conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := server.GetGRPCConn(ip, port)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("Fail to create conn, %v", err)
+		return
 	}
-	log.Infof("Connect to server %s %s success.", ip, port)
+
 	cli.client = pb.NewAgentFileServiceClient(conn)
 
 	signalChan := make(chan os.Signal, 1)

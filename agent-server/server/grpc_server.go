@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 var log = logger.New()
@@ -29,9 +30,11 @@ func StartGrpcServer() {
 	}
 	var opts []grpc.ServerOption
 	if config.TLSEnabled {
+		config, _ := GetTLSConfig()
+		cre := credentials.NewTLS(config)
+		opts = []grpc.ServerOption{grpc.Creds(cre)}
 		log.Info("Setup TLS parameters for GRPC Server.")
 	}
-
 	grpcServer = grpc.NewServer(opts...)
 	pb.RegisterAgentActionServer(grpcServer, &fluentbit.AgentServcie{})
 
