@@ -58,4 +58,5 @@ func StopGRPCServer() {
 	case <-ctxShut.Done():
 		grpcServer.Stop()
 	}
+	log.Warn("GRPC Server stops success.")
 }
