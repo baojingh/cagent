@@ -3,7 +3,7 @@ package suricata
 import (
 	logger "agentctl/log"
 	"agentctl/pb"
-	"agentctl/server"
+	"agentctl/server/grpc_conn"
 	"agentctl/utils"
 	"context"
 	"errors"
@@ -59,7 +59,7 @@ func (cli *ClientService) UploadSuricataFile() {
 		log.Errorf("File %s not exist.", file)
 		return
 	}
-	conn, err := server.GetGRPCConn(ip, port)
+	conn, err := grpc_conn.GetGRPCConn(ip, port)
 	if err != nil {
 		log.Fatalf("Fail to create conn, %v", err)
 		return
