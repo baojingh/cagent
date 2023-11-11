@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/shimingyah/pool v1.0.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v1.3.0
 	google.golang.org/grpc v1.59.0
