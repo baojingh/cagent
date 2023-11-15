@@ -10,7 +10,7 @@ build-go:
     - make build
   artifacts:
     name: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_REF_NAME"
-    path:
+    paths:
       - agentctl/build/agentctl
       - agent-server/build/agent-server-linux64
     expire_in: 7 day
