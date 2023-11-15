@@ -1,7 +1,7 @@
 package command
 
 import (
-	logger "agentctl/log"
+	logger "agent-server/log"
 	"fmt"
 	"os"
 	"os/exec"
