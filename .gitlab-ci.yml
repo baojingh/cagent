@@ -14,7 +14,7 @@ build-go:
   artifacts:
     name: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_REF_NAME"
     paths:
-      - agentctl/build/*
       - agent-server/build/*
+      - agentctl/build/*
     expire_in: 7 day
 
