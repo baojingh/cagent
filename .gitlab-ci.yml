@@ -1,0 +1,17 @@
+stages:
+  - build-go
+
+build-go:
+  stage: build-go
+  image: golang:1.19.12-alpine3.18
+  script:
+    - go env -w GO111MODULE=on
+    - go env -w GOPROXY=https://goproxy.cn,direct
+    - make build
+  artifacts:
+    name: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_REF_NAME"
+    path:
+      - agentctl/build/agentctl
+      - agent-server/build/agent-server-linux64
+    expire_in: 7 day
+
