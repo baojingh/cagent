@@ -13,6 +13,6 @@ build-go:
     name: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_REF_NAME"
     paths:
       - agentctl/build/agentctl
-      - agent-server/build/agent-server-linux64
+      - agent-server/build/agentserver
     expire_in: 7 day
 
