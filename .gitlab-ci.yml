@@ -9,11 +9,6 @@ build-go:
     - go env -w GOPROXY=https://goproxy.cn,direct
     - apk add make
     - make build
-    - pwd
-    - ls -lh agentctl/build
-    - pwd
-    - ls -lh agent-server/build
-    - pwd
   artifacts:
     name: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_REF_NAME"
     paths:
