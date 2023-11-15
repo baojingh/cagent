@@ -2,11 +2,18 @@ SUBMOD = agentctl agent-server
 
 all: clean build
 
-push:
+push-hub:
+	git remote set-url origin  git@github.com:baojingh/cagent.git
 	git add .
 	git commit -m "update"
 	git push origin main
 
+
+push-lab:
+	git remote set-url origin git@gitlab.com:localdetector/cagent.git
+	git add .
+	git commit -m "update"
+	git push origin main	
 
 
 # cert:
