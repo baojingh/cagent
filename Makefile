@@ -4,6 +4,7 @@ all: clean build
 
 push-hub:
 	git remote set-url origin  git@github.com:baojingh/cagent.git
+	git pull
 	git add .
 	git commit -m "update"
 	git push origin main
@@ -11,6 +12,7 @@ push-hub:
 
 push-lab:
 	git remote set-url origin git@gitlab.com:localdetector/cagent.git
+	git pull
 	git add .
 	git commit -m "update"
 	git push origin main	
