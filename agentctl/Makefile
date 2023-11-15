@@ -3,12 +3,17 @@ CURRENT_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
 GIT_HASH = $(git show -s --format=%H)
 GO_VERSION = $(go version)
 
-all: clean build-linux64
+all: clean build
 
 
 gen:
 	rm -rf pb/*.go
 	protoc --go_out=. --go_opt=paths=source_relative     --go-grpc_out=. --go-grpc_opt=paths=source_relative     pb/agent_service.proto
+
+build:
+	mkdir build
+	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X 'agentctl/cmd.buildVersion=$(VERSION)' -X 'agentctl/cmd.buildTime=$(CURRENT_TIME)'" -x -v -o build/agentctl
+
 
 build-linux64: pre
 	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X 'agentctl/cmd.buildVersion=$(VERSION)' -X 'agentctl/cmd.buildTime=$(CURRENT_TIME)'" -x -v -o build/agentctl
