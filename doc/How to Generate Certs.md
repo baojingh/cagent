@@ -80,31 +80,31 @@ $ openssl genrsa -out server.key 2048
 
 3. 生成CSR
 当然也可以只通过-subj传证书参数
-$ openssl req -new  -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -key server.key -out server.csr -config server.conf
+openssl req -new  -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -key server.key -out server.csr -config server.conf
 
 4. 基于 CA 签发证书
 
 签发注意下用的 flag，如果用配置文件传：
-$ openssl x509 -req -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial -days 365 -in server.csr -out server.crt -extensions req_ext -extfile server.conf
+openssl x509 -req -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial -days 365 -in server.csr -out server.crt -extensions req_ext -extfile server.conf
 
 如果命令行参数传，太长了太长了，还是少用：
-$ openssl x509 -req -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -extfile <(printf "subjectAltNa
+openssl x509 -req -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -extfile <(printf "subjectAltNa
 
 
 生成客户端证书
 1.生成客户端私钥
-$ openssl genrsa -out client.key 2048
+openssl genrsa -out client.key 2048
 
 2.生成 CSR
 
 服务端证书参数少，没了 SAN 就直接命令行敲吧
 
-$ openssl req -new -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -key client.key -out client.csr
+openssl req -new -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -key client.key -out client.csr
 
 3.基于 CA 签发证书
 
 
-$ openssl x509 -req -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial -days 365 -in client.csr -out client.crt
+openssl x509 -req -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial -days 365 -in client.csr -out client.crt
 
 
 
