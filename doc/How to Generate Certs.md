@@ -107,6 +107,10 @@ openssl req -new -subj "/C=GB/L=Zhejiang/O=github/CN=an1ex.top" -key client.key 
 openssl x509 -req -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial -days 365 -in client.csr -out client.crt
 
 
+证书校验，用下面命令来校验是否签发成功
+openssl verify -CAfile ca.crt server.crt
+openssl verify -CAfile ca.crt client.crt
+
 
 # REF
 https://www.an1ex.top/2022/08/08/gRPC%E4%B8%AD%E5%9F%BA%E4%BA%8ECA%E7%9A%84TLS%E8%AE%A4%E8%AF%81/
